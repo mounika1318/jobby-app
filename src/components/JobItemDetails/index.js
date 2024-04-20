@@ -227,7 +227,7 @@ class JobItemDetails extends Component {
       case apiStatusConstants.failure:
         return this.renderFailureView()
       case apiStatusConstants.inProgress:
-        return Touch.renderLoadingView()
+        return this.renderLoadingView()
       default:
         return null
     }
