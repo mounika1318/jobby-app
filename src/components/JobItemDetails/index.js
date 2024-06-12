@@ -1,3 +1,4 @@
+
 import {Component} from 'react'
 import Loader from 'react-loader-spinner'
 import Cookies from 'js-cookie'
@@ -6,13 +7,12 @@ import {BiLinkExternal} from 'react-icons/bi'
 import {MdLocationOn} from 'react-icons/md'
 
 import Header from '../Header'
-
 import SimilarJobItem from '../SimilarJobItem'
 import SkillsCard from '../SkillsCard'
 import './index.css'
 
 const apiStatusConstants = {
-  initail: 'INITIAL',
+  initial: 'INITIAL',
   success: 'SUCCESS',
   failure: 'FAILURE',
   inProgress: 'IN_PROGRESS',
@@ -22,7 +22,7 @@ class JobItemDetails extends Component {
   state = {
     jobData: {},
     similarJobsData: [],
-    apiStatus: apiStatusConstants.initail,
+    apiStatus: apiStatusConstants.initial,
   }
 
   componentDidMount() {
@@ -65,7 +65,7 @@ class JobItemDetails extends Component {
     const {params} = match
     const {id} = params
 
-    const jwtToken = Cookies.get('jet_token')
+    const jwtToken = Cookies.get('jwt_token')
     const url = `https://apis.ccbp.in/jobs/${id}`
     const options = {
       headers: {
@@ -77,13 +77,14 @@ class JobItemDetails extends Component {
     const response = await fetch(url, options)
     if (response.ok === true) {
       const data = await response.json()
-      console.log(data)
-      const updatedData = this.getFormattedData(data.job_detatils)
+      // console.log(data)
+      const updatedData = this.getFormattedData(data.job_details)
+      // console.log(updatedData)
       const updatedSimilarJobsData = data.similar_jobs.map(eachSimilarJob =>
         this.getFormattedSimilarData(eachSimilarJob),
       )
-      console.log(updatedData)
-      console.log(updatedSimilarJobsData)
+      // console.log(updatedData)
+      // console.log(updatedSimilarJobsData)
       this.setState({
         jobData: updatedData,
         similarJobsData: updatedSimilarJobsData,
@@ -97,7 +98,7 @@ class JobItemDetails extends Component {
   renderFailureView = () => {
     const {match} = this.props
     const {params} = match
-
+    // eslint-disable-next-line
     const {id} = params
     return (
       <div className="job-item-error-view-container">
@@ -107,7 +108,7 @@ class JobItemDetails extends Component {
           className="job-item-failure-img"
         />
         <h1 className="job-item-failure-heading-text">
-          Oops! Someting Went Wrong
+          Oops! Something Went Wrong
         </h1>
         <p className="job-item-failure-description">
           We cannot seem to find the page you are looking for
@@ -115,7 +116,7 @@ class JobItemDetails extends Component {
 
         <button
           type="button"
-          id="button"
+          data-testid="button"
           className="job-item-failure-button"
           onClick={this.getJobData}
         >
@@ -153,7 +154,7 @@ class JobItemDetails extends Component {
             <div className="logo-title-container">
               <img
                 src={companyLogoUrl}
-                alt="job details company-logo"
+                alt="job details company logo"
                 className="company-logo"
               />
               <div className="title-rating-container">
@@ -244,5 +245,4 @@ class JobItemDetails extends Component {
     )
   }
 }
-
 export default JobItemDetails
