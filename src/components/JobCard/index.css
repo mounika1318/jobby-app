@@ -32,7 +32,7 @@
   color: #ffffff;
   font-size: 20px;
   font-weight: bold;
-  font-family: 'roboto';
+  font-family: 'Roboto';
   margin-bottom: 0px;
 }
 .rating-container {
@@ -49,8 +49,10 @@
   color: #ffffff;
   font-size: 18px;
   font-weight: bold;
+
   font-family: 'Roboto';
 }
+
 .location-package-container {
   display: flex;
   flex-direction: row;
@@ -80,7 +82,7 @@
 .location-heading {
   color: #ffffff;
   font-size: 14px;
-  font-family: 'Robto';
+  font-family: 'Roboto';
 }
 .package-heading {
   color: #ffffff;
@@ -98,6 +100,7 @@
   font-size: 14px;
   font-family: 'Roboto';
 }
+
 .line {
   color: #7e858e;
   width: 100%;
