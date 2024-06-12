@@ -1,3 +1,4 @@
+
 import {Component} from 'react'
 import Cookies from 'js-cookie'
 import Loader from 'react-loader-spinner'
@@ -10,7 +11,7 @@ import './index.css'
 
 const employmentTypesList = [
   {
-    label: 'FUll Time',
+    label: 'Full Time',
     employmentTypeId: 'FULLTIME',
   },
   {
@@ -57,8 +58,8 @@ class Jobs extends Component {
   state = {
     jobsList: [],
     apiStatus: apiStatusConstants.initial,
-    employeeType: [],
-    minimumSalary: 0,
+    employeeTypeList: [],
+    minimumSalary: '',
     searchInput: '',
   }
 
@@ -70,8 +71,15 @@ class Jobs extends Component {
     this.setState({
       apiStatus: apiStatusConstants.inProgress,
     })
-    const {employeeType, minimumSalary, searchInput} = this.state
-    const apiUrl = `https://apis.ccbp.in/jobs?employment_type=${employeeType.join()}&minimum_package=${minimumSalary}&search=${searchInput}`
+    const {employeeTypeList, minimumSalary, searchInput} = this.state
+    // console.log(employeeTypeList)
+    // employeeTypeList is empty array on initial page load when any input of type of employment is clicked
+    // we are setting state of this type in changeEmployeeList function
+    const apiUrl = `https://apis.ccbp.in/jobs?employment_type=${employeeTypeList.join()}&minimum_package=${minimumSalary}&search=${searchInput}`
+    // To convert a list of items as a comma-separated string we can use the array method join()
+    //  const fruits = ["Banana", "Orange", "Apple", "Mango"];
+    // console.log(fruits.join()) Banana,Orange,Apple,Mango
+
     const jwtToken = Cookies.get('jwt_token')
 
     const options = {
@@ -83,6 +91,7 @@ class Jobs extends Component {
     const response = await fetch(apiUrl, options)
     if (response.ok === true) {
       const data = await response.json()
+      //  console.log(data.jobs) array of 60 objects
       const updatedJobsData = data.jobs.map(eachJob => ({
         companyLogoUrl: eachJob.company_logo_url,
         employmentType: eachJob.employment_type,
@@ -123,9 +132,9 @@ class Jobs extends Component {
           className="no-jobs-img"
           alt="no jobs"
         />
-        <h1 className="no-jobs-heading">No JObs Found</h1>
+        <h1 className="no-jobs-heading">No Jobs Found</h1>
         <p className="no-jobs-description">
-          we could not find any jobs.Try other filters.
+          We could not find any jobs. Try other filters.
         </p>
       </div>
     )
@@ -135,8 +144,8 @@ class Jobs extends Component {
     <div className="jobs-error-view-container">
       <img
         src="https://assets.ccbp.in/frontend/react-js/failure-img.png"
-        className="jobs-failure-img"
         alt="failure view"
+        className="jobs-failure-img"
       />
       <h1 className="jobs-failure-heading-text">Oops! Something Went Wrong</h1>
       <p className="jobs-failure-description">
@@ -174,6 +183,35 @@ class Jobs extends Component {
     }
   }
 
+  changeSalary = salaryRangeId => {
+    // console.log(salary)
+    this.setState({minimumSalary: salaryRangeId}, this.getJobs)
+  }
+
+  changeEmployeeList = type => {
+    const {employeeTypeList} = this.state
+
+    const inputNotInList = employeeTypeList.filter(
+      eachItem => eachItem === type,
+    )
+    // console.log(inputNotInList)
+    if (inputNotInList.length === 0) {
+      this.setState(
+        prevState => ({
+          employeeTypeList: [...prevState.employeeTypeList, type],
+        }),
+        this.getJobs,
+      )
+    } else {
+      const filteredData = employeeTypeList.filter(
+        eachItem => eachItem !== type,
+      )
+      // console.log(filteredData)
+
+      this.setState({employeeTypeList: filteredData}, this.getJobs)
+    }
+  }
+
   changeSearchInput = event => {
     this.setState({searchInput: event.target.value})
   }
@@ -182,17 +220,6 @@ class Jobs extends Component {
     if (event.key === 'Enter') {
       this.getJobs()
     }
-  }
-
-  changeSalary = salary => {
-    this.setState({minimumSalary: salary}, this.getJobs)
-  }
-
-  changeEmployeeList = type => {
-    this.setState(
-      prev => ({employeeType: [...prev.employeeType, type]}),
-      this.getJobs,
-    )
   }
 
   render() {
@@ -215,7 +242,7 @@ class Jobs extends Component {
               <div className="search-input-container-desktop">
                 <input
                   type="search"
-                  className="search-inpu-desktop"
+                  className="search-input-desktop"
                   placeholder="Search"
                   onChange={this.changeSearchInput}
                   onKeyDown={this.onEnterSearchInput}
@@ -238,5 +265,4 @@ class Jobs extends Component {
     )
   }
 }
-
 export default Jobs
