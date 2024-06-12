@@ -1,3 +1,4 @@
+
 import {Link} from 'react-router-dom'
 
 import Header from '../Header'
@@ -16,12 +17,11 @@ const Home = () => (
         </p>
         <Link to="/jobs">
           <button type="button" className="shop-now-button">
-            Finds Jobs
+            Find Jobs
           </button>
         </Link>
       </div>
     </div>
   </>
 )
-
 export default Home
